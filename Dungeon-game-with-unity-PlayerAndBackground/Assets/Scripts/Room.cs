@@ -5,51 +5,50 @@ using UnityEngine.UI;
 
 public class Room : MonoBehaviour
 {
-    // Start is called before the first frame update
-    public GameObject doorLeft, doorRight, doorUp, doorDown;//用来存放各个位置的门
+// Start is called before the first frame update
+public GameObject doorLeft, doorRight, doorUp, doorDown; //Store doors at different positions
+public bool roomLeft, roomRight, roomUp, roomDown; //Determine whether there are rooms above, below, left, and right
 
-    public bool roomLeft, roomRight, roomUp, roomDown;//判断上下左右是否有房间
+public Text text;
 
-    public Text text;
-    
-    public int stepToStart;//距离初始点的网格距离
+public int stepToStart; //Grid distance from the starting point
 
-    public int doorNumber;//当前房间的门的数量/入口数量
+public int doorNumber; //Number of doors/entrances in the current room
 
-    private Key key; //调用key脚本中的开门关门
+private Key key; //Call the open and close door functions in the key script
 
-    void Start()
+void Start()
+{
+    doorLeft.SetActive(roomLeft);
+    doorRight.SetActive(roomRight);
+    doorUp.SetActive(roomUp);
+    doorDown.SetActive(roomDown);
+}
+
+// Update is called once per frame
+public void UpdateRoom(float xOffset,float yOffset)
+{
+    //Calculate grid distance from the starting point
+    stepToStart = (int)(Mathf.Abs(transform.position.x / xOffset) + Mathf.Abs(transform.position.y / yOffset));
+
+    text.text = stepToStart.ToString();
+
+    if (roomUp)
+        doorNumber++;
+    if (roomDown)
+        doorNumber++;
+    if (roomLeft)
+        doorNumber++;
+    if (roomRight)
+        doorNumber++;
+}
+
+private void OnTriggerEnter2D(Collider2D other)
+{
+    if (other.CompareTag("Player"))
     {
-        doorLeft.SetActive(roomLeft);
-        doorRight.SetActive(roomRight);
-        doorUp.SetActive(roomUp);
-        doorDown.SetActive(roomDown);
+        CameraControllor.instance.ChangeTarget(transform);
+        
     }
-
-    // Update is called once per frame
-    public void UpdateRoom(float xOffset,float yOffset)
-    {
-        //计算距离初始点的网格距离
-        stepToStart = (int)(Mathf.Abs(transform.position.x / xOffset) + Mathf.Abs(transform.position.y / yOffset));
-
-        text.text = stepToStart.ToString();
-
-        if (roomUp)
-            doorNumber++;
-        if (roomDown)
-            doorNumber++;
-        if (roomLeft)
-            doorNumber++;
-        if (roomRight)
-            doorNumber++;
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            CameraControllor.instance.ChangeTarget(transform);
-            
-        }
-    }
+}
 }

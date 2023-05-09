@@ -7,14 +7,14 @@ public class RoomGenerator : MonoBehaviour
 {
     public enum Direction { up, down, left, right };
     public Direction direction;
-    [Header("房间信息")]
+    [Header("room information")]
     public GameObject roomPrefab;
     public int roomNumber;
     public Color startColor , endColor;
 
     private GameObject endRoom;
 
-    [Header("位置控制")]
+    [Header("Direction Controller")]
     public Transform generatorPoint;
     public float xOffset;
     public float yOffset;
@@ -39,14 +39,14 @@ public class RoomGenerator : MonoBehaviour
         {
             rooms.Add(Instantiate(roomPrefab, generatorPoint.position, Quaternion.identity).GetComponent<Room>());
 
-            //改变point位置
+            //Change the point possition
             ChangePointPos();
         }
         
-        rooms[0].GetComponent<SpriteRenderer>().color = startColor;//改变第1个房间的颜色
+        rooms[0].GetComponent<SpriteRenderer>().color = startColor;//Change the color of the first room
         // rooms[roomNumber-1].GetComponent<SpriteRenderer>().color = endColor;
 
-        //判断远近
+        //if it's near or far
 
         endRoom = rooms[0].gameObject;
 
@@ -106,7 +106,7 @@ public class RoomGenerator : MonoBehaviour
         newRoom.roomLeft = Physics2D.OverlapCircle(roomPosition + new Vector3(-xOffset, 0, 0), 0.2f, roomLayer);
         newRoom.roomRight = Physics2D.OverlapCircle(roomPosition + new Vector3(xOffset, 0, 0), 0.2f, roomLayer);
 
-        newRoom.UpdateRoom(xOffset,yOffset);//参考上面Room脚本的内容
+        newRoom.UpdateRoom(xOffset,yOffset);
 
         switch (newRoom.doorNumber)
         {
@@ -153,14 +153,14 @@ public class RoomGenerator : MonoBehaviour
 
     public void FindEndRoom()
     {
-        //最大数值 最远距离数字
+        //the number of max number 
         for (int i = 0; i < rooms.Count; i++)
         {
             if (rooms[i].stepToStart > maxStep)
                 maxStep = rooms[i].stepToStart;
         }
 
-        //获得最远房间和第二远
+        //Get the farest and the second
         foreach (var room in rooms)
         {
             if (room.stepToStart == maxStep)
@@ -172,13 +172,13 @@ public class RoomGenerator : MonoBehaviour
         for (int i = 0; i < farRooms.Count; i++)
         {
             if (farRooms[i].GetComponent<Room>().doorNumber == 1)
-                oneWayRooms.Add(farRooms[i]);//最远房间里的单侧门加入
+                oneWayRooms.Add(farRooms[i]);//the farest room generate
         }
 
         for (int i = 0; i < lessFarRooms.Count; i++)
         {
             if (lessFarRooms[i].GetComponent<Room>().doorNumber == 1)
-                oneWayRooms.Add(lessFarRooms[i]);//第二远远房间里的单侧门加入
+                oneWayRooms.Add(lessFarRooms[i]);//The second farest room generate
         }
 
         if (oneWayRooms.Count != 0)
