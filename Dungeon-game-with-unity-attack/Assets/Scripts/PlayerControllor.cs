@@ -11,6 +11,15 @@ public class PlayerControllor : MonoBehaviour
 
     public float speed;
 
+    public float timeBetweenAttacks;
+    float nextAttackTime;
+
+    public Transform attackPoint;
+    public float attackRange;
+    public LayerMask enemylayer;
+
+    public int damage;
+
     Vector2 movement;
 
     // Start is called before the first frame update
@@ -23,6 +32,20 @@ public class PlayerControllor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Time.time > nextAttackTime)
+        {
+            if (Input.GetKey(KeyCode.Space))
+            {
+                Collider2D [] enemiesToDamage = Physics2D.OverlapCircleALL(attackPoint.position, attackRange, enemylayer);
+                foreach (Collider2D col in enemiesToDamage)
+                {
+                    col.GetComponent<Enemy>().TakeDamge(damage);
+                }
+
+                anim.SetTrigger("attack");
+                nextAttackTime = Time.time + timeBetweenAttacks;
+            }
+        }
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
         
