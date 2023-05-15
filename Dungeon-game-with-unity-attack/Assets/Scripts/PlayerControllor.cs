@@ -65,4 +65,18 @@ public class PlayerControllor : MonoBehaviour
     {
         anim.SetFloat("speed", movement.magnitude);
     }
+
+    public void Attack() {
+        Collider2D [] enemiesToDamage = Physics2D.OverlapCircleALL(attackPoint.position, attackRange, enemylayer);
+        foreach (Collider2D col in enemiesToDamage)
+        {
+            col.GetComponent<Enemy>().TakeDamge(damage);
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color .red;
+        Gizmos.DrawWireSpher(attackPoint.position, attackRange);
+    }
 }
